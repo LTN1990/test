@@ -4,8 +4,8 @@ from PIL import Image
 from multiprocessing import Pool
 import multiprocessing as mp
 
-def thumbnail_pic(path,a,x):
-    name = os.path.join(path, x)
+def thumbnail_pic(path,a,f):
+    name = os.path.join(path, f)
     im = Image.open(name)
     width, height = im.size
     for x in range(width):
@@ -21,23 +21,22 @@ def thumbnail_pic(path,a,x):
                 fpixelset=(float(pixelset)/1464.0)#1463.7
                 pixelset=int(20*fpixelset)
                 pixelset=235+pixelset
-                # im.putpixel((x,y), (pixelset,pixelset,pixelset))
-                im.putpixel((x,y), (255,0,0))
+                im.putpixel((x,y), (pixelset,pixelset,pixelset))
 
     im.save(name, 'PNG')
 
-    print str(x) + 'Done'
+    print str(f) + ' file Done'
 
 
 def multicore(path):
     pool=mp.Pool()
     a = glob.glob(r'*.png')
-    for x in a:
-        pool.apply_async(thumbnail_pic,(path,a,x))
+    for f in a:
+        pool.apply_async(thumbnail_pic,(path,a,f))
     pool.close()
     pool.join() # Wait for all child processes to close.
 
 if __name__ == '__main__':
     path = '.'
     multicore(path)
-    print 'All Done'
+    print 'All files Done'
